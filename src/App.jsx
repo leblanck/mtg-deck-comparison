@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-const BASIC_LANDS = new Set(["Plains", "Mountain", "Swamp", "Forest", "Island"]);
-const DELAY = 80;
+const BASIC_LANDS = new Set(["Plains", "Mountain", "Swamp", "Forest", "Island"]); //Basic Land cards to ignore
+const DELAY = 80; //in milliseconds; to throttle Scryfall API calls
 const delay = ms => new Promise(r => setTimeout(r, ms));
 // Gruvbox accent colors for deck tags (work on both dark + light)
 const DECK_COLORS = ["#458588","#d79921","#98971a","#cc241d","#b16286","#689d6a","#d65d0e","#83a598"];
@@ -10,10 +10,10 @@ function parseDecklist(text) {
   const cards = new Set();
   for (const line of text.split("\n")) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.toLowerCase().startsWith("sideboard")) continue;
+    if (!trimmed || trimmed.toLowerCase().startsWith("sideboard")) continue; //stop at sideboard section of list if present
     const match = trimmed.match(/^\d+\s+(.+)$/);
     const name = match ? match[1].trim() : (!trimmed.match(/^\d+$/) ? trimmed : null);
-    if (name && !BASIC_LANDS.has(name)) cards.add(name);
+    if (name && !BASIC_LANDS.has(name)) cards.add(name); // check card name against basic_lands set, if not in set then add to cards set
   }
   return cards;
 }
@@ -62,17 +62,17 @@ const themes = {
 };
 
 export default function App() {
-  const [isDark, setIsDark] = useState(true);
-  const [page, setPage] = useState("home");
+  const [isDark, setIsDark] = useState(true); //controls which theme is used
+  const [page, setPage] = useState("home"); //control if showing home page or about page
   const [deckInputs, setDeckInputs] = useState([
     { id: 1, name: "Deck 1", text: "" },
     { id: 2, name: "Deck 2", text: "" },
-  ]);
-  const [results, setResults] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [progress, setProgress] = useState(0);
-  const [sortCol, setSortCol] = useState("count");
-  const [sortDir, setSortDir] = useState("desc");
+  ]); //array of deck objects, name + raw text from input form
+  const [results, setResults] = useState(null); //output of dups list and prices
+  const [loading, setLoading] = useState(false); //progress bar display
+  const [progress, setProgress] = useState(0); //progress bar display
+  const [sortCol, setSortCol] = useState("count"); //sorting
+  const [sortDir, setSortDir] = useState("desc"); //sorting
   const [showInput, setShowInput] = useState(true);
 
   const t = isDark ? themes.dark : themes.light;
